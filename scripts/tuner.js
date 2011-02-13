@@ -5,7 +5,10 @@ pt = {
 pt.Tuner = function(id, params) {
 	this.feedURL = (params.feedURL) ? params.feedURL : "http://thewireless.deepcobalt.com/podslicer/feed.php?callback=?";
 	this.theme = (params.theme) ? params.theme : "minimal";
-	this.podcasts = [];
+	this.startIndex = 0;
+	this.bars = {maxHeight: 100, number: 10};
+	this.keys = [];
+	this.podcasts = {};
 	this.activeIndex = 0;
 	this.activePodcast;
 	this.node = $("#" + id);
@@ -22,12 +25,19 @@ pt.Tuner = function(id, params) {
 		
 		// Create a podcast object for each item in the feed
 		var self = this;
+		var maxDuration = 0;
 		jQuery.each(data, function(index, value) {
 			var podcast = new pt.Podcast(self.node.filter('.pt-players').first(), this);
-			self.podcasts.push(podcast);
+			
+			self.keys.push(podcast.id);
+			self.podcasts[podcast.id] = podcast;
+			
+			if (podcast.durationInSeconds > maxDuration) { 
+				maxDuration = podcast.durationInSeconds;
+			}
 		});
 		
-		console.log(this.podcasts);
+		this._createBars(maxDuration);
 		
 		// Attach key event 
 		$(document).bind('keyup', {tuner : this}, this._onKeyUp);
@@ -39,8 +49,9 @@ pt.Tuner = function(id, params) {
 		this.activePodcast.preview();
 		
 		// Preload audio for next item
-		if (this.podcasts[this.activeIndex++]) {
-			this.podcasts[this.activeIndex++].load();
+		var nextPodcast = this._getPodcast(this.activeIndex++);
+		if (nextPodcast) {
+			nextPodcast.load();
 		}
 	};
 
@@ -58,7 +69,7 @@ pt.Tuner = function(id, params) {
 		this.activeIndex--;
 		if (this.activeIndex < 0) return;
 
-		this.activePodcast = this.podcasts[this.activeIndex];
+		this.activePodcast = this._getPodcast(this.activeIndex);
 		this.activePodcast.play();
 		
 		this._updateDOM();
@@ -68,9 +79,9 @@ pt.Tuner = function(id, params) {
 		if (this.activePodcast) this.activePodcast.pause();
 		
 		this.activeIndex++;
-		if (this.activeIndex > this.podcasts.length) return;
+		if (this.activeIndex > this.keys.length) return;
 		
-		this.activePodcast = this.podcasts[this.activeIndex];
+		this.activePodcast = this._getPodcast(this.activeIndex);
 		this.activePodcast.play();
 		
 		this._updateDOM(); // Change to event
@@ -103,7 +114,25 @@ pt.Tuner = function(id, params) {
 		var next = $('<div class="pt-next"><span>Next</span></div>').prependTo(this.node);
 		var progress = $('<div class="pt-progressbar"><span></span><div class="pt-location"></div></div>').prependTo(this.node);
 		var info = $('<div class="pt-description"></div>').prependTo(this.node);
-		var programmes = $('<div class="pt-programmes"></div>').prependTo(this.node);
+		var bars = $('<div class="pt-bars"></div>').prependTo(this.node);
+	};
+	
+	this._createBars = function(maxDuration) {
+		var bars = $('.pt-bars', this.node);
+		console.log(bars);
+		
+		var self = this;
+		jQuery.each(this.podcasts, function(index, value) {
+			var height = this.durationInSeconds * self.bars.maxHeight/maxDuration;
+			console.log(this);
+			var genre = "";
+			
+			var bar = $('<div>', {
+				id: this.id
+			}).appendTo(bars);
+			bar.css("height", height + "%");
+			bar.css("width", "5px");
+		});
 	};
 	
 	this._updateDOM = function() {
@@ -111,7 +140,17 @@ pt.Tuner = function(id, params) {
 		var description = $('div.pt-description', this.node);
 		
 		description.first().html(this.activePodcast.title);
-	}
+	};
+	
+	this._getPodcast = function(index) {
+		var key = this.keys[index];
+		
+		if (this.podcasts[key]) {
+			return this.podcasts[key];
+		} else {
+			return false;
+		}
+	};
 };
 
 pt.Podcast = function(rootNode, params) {
