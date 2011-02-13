@@ -1,0 +1,9 @@
+.pt-bars {
+	height:30px;
+	
+}
+.pt-bars div {
+	background-color:#ccc;
+	display:inline-block;
+	margin-right:1px;
+}
