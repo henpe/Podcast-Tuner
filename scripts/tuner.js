@@ -109,37 +109,40 @@ pt.Tuner = function(id, params) {
 	};
 	
 	this._render = function() {
+		this.node.addClass('pt-tuner');
 		var players = $('<div class="pt-players"></div>').prependTo(this.node);
 		var previous = $('<div class="pt-previous"><span>Previous</span></div>').prependTo(this.node);
 		var next = $('<div class="pt-next"><span>Next</span></div>').prependTo(this.node);
 		var progress = $('<div class="pt-progressbar"><span></span><div class="pt-location"></div></div>').prependTo(this.node);
-		var info = $('<div class="pt-description"></div>').prependTo(this.node);
+		var programme = $('<div class="pt-programme"><h2></h2><img /><p class="pt-description"></p></div>').prependTo(this.node);
 		var bars = $('<div class="pt-bars"></div>').prependTo(this.node);
 	};
 	
 	this._createBars = function(maxDuration) {
 		var bars = $('.pt-bars', this.node);
-		console.log(bars);
 		
 		var self = this;
 		jQuery.each(this.podcasts, function(index, value) {
 			var height = this.durationInSeconds * self.bars.maxHeight/maxDuration;
-			console.log(this);
-			var genre = "";
+			var genre = (this.genres) ? 'pt-genre-' + this.genres[0].toLowerCase() : '';
 			
 			var bar = $('<div>', {
-				id: this.id
+				id: 'pt-bar-' + this.id
 			}).appendTo(bars);
-			bar.css("height", height + "%");
-			bar.css("width", "5px");
+			bar.css({'height': height + "%"});
+			bar.addClass(genre);
 		});
 	};
 	
 	this._updateDOM = function() {
 		console.log(this.node);
-		var description = $('div.pt-description', this.node);
+		var title = $('div.pt-programme h2', this.node);
+		var description = $('div.pt-programme p', this.node);
+		var image = $('div.pt-programme img', this.node);
 		
-		description.first().html(this.activePodcast.title);
+		title.first().html(this.activePodcast.title);
+		description.first().html(this.activePodcast.description);
+		image.attr('src', this.activePodcast.image);
 	};
 	
 	this._getPodcast = function(index) {
@@ -168,7 +171,7 @@ pt.Podcast = function(rootNode, params) {
 	this.epoch = params.epoch;
 	this.pubDate = params.pubDate || "";
 	this.rootNode = rootNode;
-	
+	console.log(this);
 	this.play = function(params) {
 		this.load();
 		if (this.player) {
