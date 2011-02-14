@@ -26,8 +26,9 @@ pt.Tuner = function(id, params) {
 		// Create a podcast object for each item in the feed
 		var self = this;
 		var maxDuration = 0;
+		var rootNode = $('.pt-programmes', this.node).first();
 		jQuery.each(data, function(index, value) {
-			var podcast = new pt.Podcast(self.node.filter('.pt-players').first(), this);
+			var podcast = new pt.Podcast(rootNode, this);
 			
 			self.keys.push(podcast.id);
 			self.podcasts[podcast.id] = podcast;
@@ -64,10 +65,12 @@ pt.Tuner = function(id, params) {
 	};
 
 	this.previous = function () {
-		if (this.activePodcast) this.activePodcast.pause();
-		
 		this.activeIndex--;
 		if (this.activeIndex < 0) return;
+
+		if (this.activePodcast) {
+			this.activePodcast.pause();
+		}
 
 		this.activePodcast = this._getPodcast(this.activeIndex);
 		this.activePodcast.play();
@@ -76,15 +79,17 @@ pt.Tuner = function(id, params) {
 	};
 
 	this.next = function() {
-		if (this.activePodcast) this.activePodcast.pause();
-		
 		this.activeIndex++;
 		if (this.activeIndex > this.keys.length) return;
+		
+		if (this.activePodcast) {
+			this.activePodcast.pause();
+		}
 		
 		this.activePodcast = this._getPodcast(this.activeIndex);
 		this.activePodcast.play();
 		
-		this._updateDOM(); // Change to event
+		this._updateDOM();
 	};
 	
 	this._onKeyUp = function(e) {
@@ -110,11 +115,10 @@ pt.Tuner = function(id, params) {
 	
 	this._render = function() {
 		this.node.addClass('pt-tuner');
-		var players = $('<div class="pt-players"></div>').prependTo(this.node);
+		var programmes = $('<div class="pt-programmes"></div>').prependTo(this.node);
 		var previous = $('<div class="pt-previous"><span>Previous</span></div>').prependTo(this.node);
 		var next = $('<div class="pt-next"><span>Next</span></div>').prependTo(this.node);
 		var progress = $('<div class="pt-progressbar"><span></span><div class="pt-location"></div></div>').prependTo(this.node);
-		var programme = $('<div class="pt-programme"><h2></h2><img /><p class="pt-description"></p></div>').prependTo(this.node);
 		var bars = $('<div class="pt-bars"></div>').prependTo(this.node);
 	};
 	
@@ -135,14 +139,11 @@ pt.Tuner = function(id, params) {
 	};
 	
 	this._updateDOM = function() {
-		console.log(this.node);
-		var title = $('div.pt-programme h2', this.node);
-		var description = $('div.pt-programme p', this.node);
-		var image = $('div.pt-programme img', this.node);
+		// Move bars
 		
-		title.first().html(this.activePodcast.title);
-		description.first().html(this.activePodcast.description);
-		image.attr('src', this.activePodcast.image);
+		// Update programme info (maybe animate?)
+		$('.pt-programmes .pt-active', this.node).removeClass('pt-active');
+		this.activePodcast.node.addClass('pt-active');
 	};
 	
 	this._getPodcast = function(index) {
@@ -171,11 +172,10 @@ pt.Podcast = function(rootNode, params) {
 	this.epoch = params.epoch;
 	this.pubDate = params.pubDate || "";
 	this.rootNode = rootNode;
-	console.log(this);
+	
 	this.play = function(params) {
 		this.load();
 		if (this.player) {
-			console.log(this.player);
 			this.player.play();
 		}
 	};
@@ -188,7 +188,7 @@ pt.Podcast = function(rootNode, params) {
 	
 	this.load = function() {
 		if (!this.player) {
-			this._createAudioElement();
+			this._render();
 		}
 	};
 	
@@ -198,7 +198,13 @@ pt.Podcast = function(rootNode, params) {
 		}
 	};
 	
-	this._createAudioElement = function() {
+	this._render = function() {
+		this.node = $('<div>', {
+			id : 'pt-programme-' + this.id,
+			class: 'pt-programme'
+		}).appendTo(this.rootNode);
+		
+		// Create player
 		this.player = $('<audio>', {
 			id : 'pt-player-' + this.id,
 			autobuffer : 'autobuffer',  
@@ -217,6 +223,30 @@ pt.Podcast = function(rootNode, params) {
 			type: 'audio/mpeg'
 		}).appendTo(this.player);
 		
-		this.rootNode.append(this.player);
+		this.node.append(this.player);
+		
+		// Create programme info
+		$('<h2>', {
+			html: this.title
+		}).appendTo(this.node);
+		
+		$('<p>', {
+			html: this.description,
+			class: 'pt-p-description'
+		}).appendTo(this.node);
+		
+		$('<p>', {
+			html: this.genres[0],
+			class: 'pt-p-genre'
+		}).appendTo(this.node);
+		
+		$('<p>', {
+			html: this.duration,
+			class: 'pt-p-duration'
+		}).appendTo(this.node);
+		
+		$('<img>', {
+			src: this.image
+		}).appendTo(this.node);
 	};
 };
