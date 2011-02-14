@@ -1,3 +1,5 @@
+/* Tuner */
+
 .pt-tuner {
 	width:500px;
 	height:200px;
@@ -47,10 +49,19 @@
 	height:2px;
 	background-color:#f00;	
 }
+
+
+/* Programme */
+
 .pt-programme {
 	margin-top:30px;
 	padding-left:165px;
-	position:relative;	
+	position:relative;
+	display:none;
+	-webkit-transition: display 0.5s;	
+}
+.pt-active {
+	display:block;	
 }
 .pt-programme img {
 	position:absolute;
@@ -59,6 +70,6 @@
 	left:10px;
 	border:6px solid #000;
 }
-.pt-programme p.pt-description {
+.pt-programme p.pt-p-description {
 	display:none;
 }
