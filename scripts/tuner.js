@@ -118,7 +118,7 @@ pt.Tuner = function(id, params) {
 		var programmes = $('<div class="pt-programmes"></div>').prependTo(this.node);
 		var previous = $('<div class="pt-previous"><span>Previous</span></div>').prependTo(this.node);
 		var next = $('<div class="pt-next"><span>Next</span></div>').prependTo(this.node);
-		var progress = $('<div class="pt-progressbar"><span></span><div class="pt-location"></div></div>').prependTo(this.node);
+		var progress = $('<div class="pt-progressbar"><div class="pt-location"></div></div>').prependTo(this.node);
 		var bars = $('<div class="pt-bars"></div>').prependTo(this.node);
 	};
 	
@@ -144,6 +144,16 @@ pt.Tuner = function(id, params) {
 		// Update programme info (maybe animate?)
 		$('.pt-programmes .pt-active', this.node).removeClass('pt-active');
 		this.activePodcast.node.addClass('pt-active');
+		
+		// Move progressbar location
+		var progressWidth = $('.pt-progressbar').width();
+		var ratio = progressWidth / this.activePodcast.durationInSeconds;
+		var leftPos = this.activePodcast.audio.trim.start * ratio;
+		var width = (this.activePodcast.audio.trim.end - this.activePodcast.audio.trim.start) * ratio;
+		$('.pt-location').css('display', 'block').animate({
+			'left': leftPos,
+	        'width': width
+		});
 	};
 	
 	this._getPodcast = function(index) {
