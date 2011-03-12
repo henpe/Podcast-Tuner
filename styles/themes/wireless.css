@@ -1,0 +1,187 @@
+body {
+	color: #fff;
+	background-color: #252525;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.13, #555555
+		), color-stop(0.43, #3F3F3F), color-stop(0.78, #252525) );
+	background-image: -moz-linear-gradient(center bottom, #555555 13%, #3F3F3F 43%, #252525
+		78%);
+}
+
+/* Tuner */
+.pt-tuner {
+	width: 795px;
+	display: block;
+	position: relative;
+	font-family: helvetica;
+}
+
+.pt-previous {
+	position: absolute;
+	top: 110px;
+	left: 0;
+	width: 160px;
+	height: 102px;
+	background: transparent url(../../images/button_previous.png) no-repeat
+		0 0;
+}
+
+.pt-next {
+	position: absolute;
+	top: 110px;
+	left: 635px;
+	width: 160px;
+	height: 102px;
+	background: transparent url(../../images/button_next.png) no-repeat 0 0;
+}
+
+.pt-previous span,.pt-next span {
+	display: none;
+}
+
+.pt-dial {
+	height: 225px;
+	padding: 0;
+	background: transparent url(../../images/dial.png) no-repeat 90px 0;
+}
+
+.pt-bars {
+	position: absolute;
+	top: -30px;
+	left: -50px;
+}
+
+.pt-bars div {
+	background-color: #ccc;
+	display: block;
+	margin-right: 1px;
+	width: 14px;
+	height: 15px;
+	left: 442px;
+	top: 531px;
+	position: absolute;
+	-webkit-transition-property: height;
+	-webkit-transition-duration: 0.5s;
+	-webkit-transition-timing-function: ease-out;
+	-moz-transition-property: height;
+	-moz-transition-duration: 0.5s;
+	-moz-transition-timing-function: ease-out;
+}
+
+.pt-progressbar {
+	position: relative;
+	left: 155px;
+	width: 640px;
+	height: 25px;
+	margin: 10px 0;
+	background-color: #999999;
+}
+
+.pt-progressbar .pt-location {
+	opacity: 0.8;
+	background: #000;
+	width: 30px;
+	height: 100%;
+	position: absolute;
+	top: 0;
+}
+
+/* Programme */
+.pt-programmes {
+	background-color: #000;
+	height: 155px;
+}
+
+.pt-programme {
+	padding-left: 165px;
+	position: relative;
+	display: none;
+	-webkit-transition: display 0.5s;
+}
+
+.pt-active {
+	display: block;
+}
+
+.pt-programme img {
+	position: absolute;
+	width: 155px;
+	top: 0;
+	left: 0;
+}
+
+.pt-programme p.pt-p-description {
+	display: none;
+}
+
+/* Genres */
+.pt-bars div.pt-genre-news {
+	background-color:#c99b9c;
+}
+
+.pt-bars div.pt-genre-sport {
+	background-color:#dacc99;
+}
+
+.pt-bars div.pt-genre-childrens {
+	background-color: #b9caa2;
+}
+
+.pt-bars div.pt-genre-comedy {
+	background-color: #d9b398;
+}
+
+.pt-bars div.pt-genre-drama {
+	background-color: #be8fab;
+}
+
+.pt-bars div.pt-genre-entertainment {
+	background-color: #8faea0;
+}
+
+.pt-bars div.pt-genre-factual {
+	background-color: #9d9ebb;
+}
+
+.pt-bars div.pt-genre-learning {
+	background-color: #b5b5b5;
+}
+
+.pt-bars div.pt-genre-music {
+	background-color: #9bc2d2;
+}
+
+.pt-bars div.pt-genre-religionethics {
+	background-color: #bdae9e;
+}
+
+.genre-childrens {
+	color: #b9caa2 !important;
+}
+
+.genre-comedy {
+	color: #d9b398 !important;
+}
+
+.genre-drama {
+	color: #be8fab !important;
+}
+
+.genre-entertainment {
+	color: #8faea0 !important;
+}
+
+.genre-factual {
+	color: #9d9ebb !important;
+}
+
+.genre-learning {
+	color: #b5b5b5 !important;
+}
+
+.genre-music {
+	color: #9bc2d2 !important;
+}
+
+.religionethics {
+	color: #bdae9e !important;
+}
